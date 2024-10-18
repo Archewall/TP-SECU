@@ -125,3 +125,109 @@ J'AI CATCH YNOV
 Réponse DNS capturée : 172.67.74.226
 True
 ```
+
+### craft DNS
+
+```py
+from scapy.all import Ether, IP, UDP, DNS, DNSQR, srp
+
+eth = Ether()
+
+
+ip = IP(src="10.33.73.76", dst="8.8.8.8")
+
+
+udp = UDP(sport=12345, dport=53)
+
+dns = DNS(rd=1, qd=DNSQR(qname="ynov.com"))
+
+
+frame = eth / ip / udp / dns
+
+answered, unanswered = srp(frame, timeout=5)
+
+if answered:
+    print(answered[0][1].show())
+else:
+    print("Pas de réponse DNS reçue.")
+
+
+RESULTAT
+
+
+Received 5 packets, got 1 answers, remaining 0 packets
+###[ Ethernet ]###
+  dst       = e0:0a:f6:b0:73:d5
+  src       = 7c:5a:1c:d3:d8:76
+  type      = IPv4
+###[ IP ]###
+     version   = 4
+     ihl       = 5
+     tos       = 0x0
+     len       = 102
+     id        = 59099
+     flags     =
+     frag      = 0
+     ttl       = 121
+     proto     = udp
+     chksum    = 0xf72e
+     src       = 8.8.8.8
+     dst       = 10.33.73.76
+     \options   \
+###[ UDP ]###
+        sport     = domain
+        dport     = 12345
+        len       = 82
+        chksum    = 0xe94
+###[ DNS ]###
+           id        = 0
+           qr        = 1
+           opcode    = QUERY
+           aa        = 0
+           tc        = 0
+           rd        = 1
+           ra        = 1
+           z         = 0
+           ad        = 0
+           cd        = 0
+           rcode     = ok
+           qdcount   = 1
+           ancount   = 3
+           nscount   = 0
+           arcount   = 0
+           \qd        \
+            |###[ DNS Question Record ]###
+            |  qname     = b'ynov.com.'
+            |  qtype     = A
+            |  unicastresponse= 0
+            |  qclass    = IN
+           \an        \
+            |###[ DNS Resource Record ]###
+            |  rrname    = b'ynov.com.'
+            |  type      = A
+            |  cacheflush= 0
+            |  rclass    = IN
+            |  ttl       = 300
+            |  rdlen     = None
+            |  rdata     = 172.67.74.226
+            |###[ DNS Resource Record ]###
+            |  rrname    = b'ynov.com.'
+            |  type      = A
+            |  cacheflush= 0
+            |  rclass    = IN
+            |  ttl       = 300
+            |  rdlen     = None
+            |  rdata     = 104.26.10.233
+            |###[ DNS Resource Record ]###
+            |  rrname    = b'ynov.com.'
+            |  type      = A
+            |  cacheflush= 0
+            |  rclass    = IN
+            |  ttl       = 300
+            |  rdlen     = None
+            |  rdata     = 104.26.11.233
+           \ns        \
+           \ar        \
+
+None
+```
